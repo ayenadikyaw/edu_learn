@@ -12,7 +12,6 @@ const props = defineProps({
     enrolledCourses: Object,
 });
 
-
 const navigate = (url) => {
     if (!url) return;
     router.visit(url, {

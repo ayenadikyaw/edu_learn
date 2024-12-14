@@ -5,6 +5,8 @@ import AuthenticatedLayout from "@/Components/Layouts/authenticated.vue";
 import { usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { useForm } from '@inertiajs/vue3';
+import { useToast } from "primevue";
+
 const role = usePage().props?.auth?.user?.role || 'guest';
 const layout = computed(() => {
     if (role && role === 'user') {
@@ -21,14 +23,39 @@ const form = useForm({
     message: ''
 });
 
-const submitForm = () => {
-    form.post('/contact-us');
+const toast = useToast();
+
+const submitForm = (e) => {
+    e.preventDefault();
+    form.post('/contact-us', {
+        preserveScroll: true,
+        onSuccess: () => {
+            form.reset();
+            toast.add({
+                severity: "success",
+                summary: "Success",
+                detail: "Message sent successfully",
+                life: 3000,
+            });
+        },
+        onError: () => {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: "Something went wrong! Please input all fields and try again.",
+                life: 3000,
+            });
+        }
+    });
 };
+
+
 </script>
 
 <template>
     <component :is="layout">
         <Head :title="`Contact Us`" />
+        <Toast />
         <div
             class="container mx-auto px-4 py-24 bg-gradient-to-b from-primary/5 to-transparent"
         >
