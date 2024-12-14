@@ -43,6 +43,11 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withTimestamps();
     }
 
+    public function enrollments()
+    {
+        return $this->hasMany(StudentEnrolled::class);
+    }
+
 
     //check if user is enrolled in a course
     public function isEnrolledInCourse($courseId)

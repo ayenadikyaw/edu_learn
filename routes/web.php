@@ -9,8 +9,10 @@ use App\Http\Controllers\{
     AdminDashboardController,
     Auth\VerifyEmailController,
     CourseController,
+    HomePageController,
     LessonController,
     ProfileController,
+    StudentController,
     StudentDasbhoardController,
     StudentEnrollController
 };
@@ -28,8 +30,13 @@ Route::group([], function () {
 
     Route::get('/about-us', fn() => Inertia::render('AboutUs'));
     Route::get('/contact-us', fn() => Inertia::render('ContactUs'));
+    Route::get('/courses/getCourses', [CourseController::class, 'getCourses'])->name('courses.getCourses');
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+
+    Route::get('/total-students', [HomePageController::class, 'getTotalStudents']);
+    Route::get('/total-courses', [HomePageController::class, 'getTotalCourses']);
+    Route::get('/total-categories', [HomePageController::class, 'getTotalCategories']);
 });
 
 // Authenticated routes
@@ -48,7 +55,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::match(['PUT', 'POST'], '/admin/update-course/{course}', [CourseController::class, 'update'])->name('admin.update-course');
         Route::delete('/admin/delete-course/{course}', [CourseController::class, 'destroy'])->name('admin.delete-course');
         Route::put('/admin/publish-course/{course}', [CourseController::class, 'publish'])->name('admin.publish-course');
-
+        Route::get('/admin/manage-students', [StudentController::class, 'index'])->name('admin.manage-students');
+        Route::delete('/admin/delete-student/{student}', [StudentController::class, 'destroy'])->name('admin.delete-student');
         //lessons routes
         Route::get('/admin/add-lesson/{course}', [LessonController::class, 'create'])->name('admin.add-lesson');
         Route::post('/admin/add-lesson/{course}', [LessonController::class, 'store'])->name('admin.add-lesson');
@@ -69,6 +77,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // User routes
     Route::middleware(UserMiddleware::class)->group(function () {
         Route::get('/user', [StudentDasbhoardController::class, 'index'])->name('user.dashboard');
+        Route::get('/courses/{course}', [StudentController::class, 'learningPage'])->name('courses.learningPage');
         Route::post('/courses/{course}/enroll', [StudentEnrollController::class, 'enroll'])->name('courses.enroll');
         Route::get('/enrolled-courses', [StudentEnrollController::class, 'getEnrolledCourses'])->name('enrolled-courses');
         Route::get('/enrolled-courses/{course}', [StudentEnrollController::class, 'checkEnrollment'])->name('enrolled-courses.check');

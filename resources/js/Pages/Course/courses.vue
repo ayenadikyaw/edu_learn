@@ -234,7 +234,7 @@ watch(
                                 <!-- Course Image with Overlay -->
                                 <div class="relative overflow-hidden">
                                     <img
-                                        :src="course.profile_image"
+                                        :src="course.profile_image ? course.profile_image : '/assets/images/defaultCourse1.jpg'"
                                         :alt="course.title"
                                         class="w-full h-52 object-cover transform group-hover:scale-105 transition-transform duration-300"
                                     />
@@ -243,11 +243,11 @@ watch(
                                     <!-- Badge -->
                                     <div
                                         v-if="course.badge"
-                                        class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-semibold text-white backdrop-blur-sm"
+                                        class="absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-semibold text-white backdrop-blur-sm shadow-lg"
                                         :class="`${
-                                            course.badge == 'popular'
-                                                ? 'bg-primary/80'
-                                                : 'bg-secondary/80'
+                                            course.badge == 'new'
+                                                ? 'from-primary to-primary_light'
+                                                : 'from-secondary to-secondary_light'
                                         }`"
                                     >
                                         {{ course.badge }}

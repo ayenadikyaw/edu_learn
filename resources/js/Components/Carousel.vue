@@ -1,17 +1,17 @@
 <script setup>
  const slides = [
         {
-            image: '/images/slide1.jpg',
+            image: '/assets/images/image1.jpg',
             title: 'Transform Your Future With Online Learning',
             description: 'Access world-class education from anywhere. Learn at your own pace with our flexible online courses.'
         },
         {
-            image: '/images/slide2.jpg',
+            image: '/assets/images/image2.jpg',
             title: 'Expert-Led Courses',
             description: 'Learn from industry professionals and gain practical skills that employers value.'
         },
         {
-            image: '/images/slide3.jpg',
+            image: '/assets/images/image3.jpg',
             title: 'Interactive Learning Experience',
             description: 'Engage with dynamic content, collaborate with peers, and get real-time feedback.'
         }

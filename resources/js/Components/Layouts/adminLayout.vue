@@ -145,14 +145,17 @@ Echo.channel("course-enrolled").listen(".course.enrolled", (e) => {
                     </Link>
                 </div>
                 <div class="px-4 py-3 hover:bg-primary/10 cursor-pointer">
-                    <div class="flex items-center space-x-3 text-white">
+                    <Link
+                        href="/admin/manage-students"
+                        class="flex items-center space-x-3 text-white"
+                    >
                         <i class="pi pi-users"></i>
                         <span
                             class="whitespace-nowrap transition-opacity duration-300"
                             :class="{ 'opacity-0': isSidebarCollapsed }"
                             >Students</span
                         >
-                    </div>
+                    </Link>
                 </div>
                 <div class="px-4 py-3 hover:bg-primary/10 cursor-pointer">
                     <div class="flex items-center space-x-3 text-white">

@@ -6,6 +6,7 @@ import axios from "axios";
 import { useForm } from "@inertiajs/vue3";
 import { useToast } from "primevue/usetoast";
 import AdminLayout from "@/Components/Layouts/adminLayout.vue";
+import { Link } from "@inertiajs/vue3";
 //variables
 const previewUrl = ref("");
 const content = ref("");
@@ -108,9 +109,26 @@ const addLearningPoint = () => {
 const removeLearningPoint = (index) => {
     courseData.learning_points.splice(index, 1);
 };
+
+const cancel = () => {
+    courseData.reset();
+    previewUrl.value = null;
+    // Reset the file input
+    const fileInput = document.getElementById('course-image');
+    if (fileInput) {
+        fileInput.value = '';
+    }
+};
 </script>
 <template>
     <AdminLayout>
+        <Link
+            :href="route('admin.manage-courses')"
+            class="flex items-center gap-2 text-primary hover:text-primary/90"
+        >
+            <span class="pi pi-arrow-left text-2xl"></span>
+            Back
+        </Link>
         <div class="p-4">
             <h1 class="text-2xl font-bold text-gray-800 mb-8">
                 Add New Course
@@ -295,16 +313,24 @@ const removeLearningPoint = (index) => {
                             Add Learning Point
                         </button>
                     </div>
-
-                    <button
-                        @click="createCourse"
-                        :disabled="isDone"
-                        class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 flex items-center gap-2"
-                        :class="{ 'opacity-50 cursor-not-allowed': isDone }"
-                    >
-                        <i class="pi pi-check"></i>
-                        Create
-                    </button>
+                    <div class="flex gap-4">
+                        <button
+                            @click="createCourse"
+                            :disabled="isDone"
+                            class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 flex items-center gap-2"
+                            :class="{ 'opacity-50 cursor-not-allowed': isDone }"
+                        >
+                            <i class="pi pi-check"></i>
+                            Create
+                        </button>
+                        <button
+                            @click="cancel"
+                            class="bg-secondary text-white px-4 py-2 rounded-md hover:bg-secondary/90 flex items-center gap-2"
+                        >
+                            <i class="pi pi-times"></i>
+                            Cancel
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
