@@ -4,6 +4,7 @@ import DefaultLayout from "@/Components/Layouts/default.vue";
 import AuthenticatedLayout from "@/Components/Layouts/authenticated.vue";
 import { usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
+import { useForm } from '@inertiajs/vue3';
 const role = usePage().props?.auth?.user?.role || 'guest';
 const layout = computed(() => {
     if (role && role === 'user') {
@@ -12,6 +13,17 @@ const layout = computed(() => {
         return DefaultLayout;
     }
 });
+
+const form = useForm({
+    first_name: '',
+    last_name: '',
+    email: '',
+    message: ''
+});
+
+const submitForm = () => {
+    form.post('/contact-us');
+};
 </script>
 
 <template>
@@ -52,7 +64,7 @@ const layout = computed(() => {
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">
                         Phone
                     </h3>
-                    <p class="text-gray-600 text-sm">+1 (555) 123-4567</p>
+                    <p class="text-gray-600 text-sm">+95-9-977777777</p>
                 </div>
                 <div
                     class="p-4 bg-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all duration-300"
@@ -64,7 +76,7 @@ const layout = computed(() => {
                         Location
                     </h3>
                     <p class="text-gray-600 text-sm">
-                        123 Education St, Learning City
+                        Yangon, Myanmar
                     </p>
                 </div>
             </div>
@@ -100,6 +112,7 @@ const layout = computed(() => {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="relative">
                             <input
+                                v-model="form.first_name"
                                 type="text"
                                 required
                                 id="first_name"
@@ -114,6 +127,7 @@ const layout = computed(() => {
                         </div>
                         <div class="relative">
                             <input
+                                v-model="form.last_name"
                                 type="text"
                                 required
                                 id="last_name"
@@ -130,6 +144,7 @@ const layout = computed(() => {
 
                     <div class="relative">
                         <input
+                            v-model="form.email"
                             type="email"
                             required
                             id="email"
@@ -145,6 +160,7 @@ const layout = computed(() => {
 
                     <div class="relative">
                         <textarea
+                            v-model="form.message"
                             required
                             rows="4"
                             id="message"
@@ -159,7 +175,7 @@ const layout = computed(() => {
                     </div>
 
                     <button
-                        type="submit"
+                        @click="submitForm"
                         class="w-full bg-primary hover:bg-primary_light text-white font-semibold py-3 px-6 rounded-lg transform hover:scale-105 transition-all duration-300 hover:shadow-lg"
                     >
                         Send Message

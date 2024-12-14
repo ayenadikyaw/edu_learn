@@ -49,6 +49,7 @@ class CourseCreate implements ShouldBroadcastNow
         return [
             'message' => 'New course [' . $this->course->title . '] has been created',
             'time' => now()->format('H:i:s'),
+            'course' => $this->course,
         ];
     }
 }

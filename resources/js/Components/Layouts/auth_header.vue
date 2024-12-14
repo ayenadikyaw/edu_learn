@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import { Link } from "@inertiajs/vue3";
 import { usePage } from "@inertiajs/vue3";
@@ -13,6 +13,8 @@ const isDropdownOpen = ref(false);
 const showNotifications = ref(false);
 const notifications = ref([]);
 const error = ref(null);
+const isMenuOpen = ref(false);
+const isLoading = ref(false);
 
 //fetch notifications
 const fetchNotifications = async () => {
@@ -24,7 +26,7 @@ const fetchNotifications = async () => {
             (notification) => {
                 return {
                     message: notification.data.message,
-                    time: moment(notification.created_at).fromNow()
+                    time: moment(notification.created_at).fromNow(),
                 };
             }
         );
@@ -33,7 +35,6 @@ const fetchNotifications = async () => {
             ...transformedNotifications,
         ];
         error.value = null;
-   
     } catch (err) {
         error.value =
             err.response?.data?.message || "Failed to fetch notifications";
@@ -55,7 +56,6 @@ onMounted(() => {
     user.value = usePage().props.auth.user;
     //console.log(user.value, "user");
     fetchNotifications();
-    console.log(notifications.value, "notifications");
 });
 
 onUnmounted(() => {
@@ -85,10 +85,26 @@ const toggleNotifications = () => {
 };
 
 // Update the Echo usage to use window.Echo
-Echo.channel("courses").listen(".course.create", (e) => {
-    console.log(e.message, "e");
-    notifications.value.unshift(e.message);
+Echo.channel("courses").listen(".course.create", async (e) => {
+    isLoading.value = true;
+    try {
+        const newNotification = {
+            message: typeof e.message === 'string' ? e.message : e.message?.message || 'New notification',
+            time: moment().fromNow()
+        };
+        notifications.value = [{...newNotification}, ...notifications.value];
+    } finally {
+        // Add a small delay to ensure smooth transition
+        setTimeout(() => {
+            isLoading.value = false;
+        }, 300);
+    }
 });
+
+
+watch(notifications, (newVal) => {
+    console.log('Notifications updated:', newVal);
+}, { deep: true });
 </script>
 
 <template>
@@ -104,7 +120,7 @@ Echo.channel("courses").listen(".course.create", (e) => {
 
             <!-- Navigation Menu -->
             <div
-                class="flex items-center gap-4 text-md font-semibold text-primary"
+                class="hidden md:flex items-center gap-4 text-md font-semibold text-primary"
             >
                 <Link
                     href="/"
@@ -152,8 +168,13 @@ Echo.channel("courses").listen(".course.create", (e) => {
                         </div>
 
                         <div class="max-h-96 overflow-y-auto">
+                            <div v-if="isLoading" class="px-4 py-3 text-gray-500 text-sm">
+                                <div class="flex items-center justify-center">
+                                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                                </div>
+                            </div>
                             <div
-                                v-if="error"
+                                v-else-if="error"
                                 class="px-4 py-3 text-red-600 text-sm"
                             >
                                 {{ error }}
@@ -162,7 +183,7 @@ Echo.channel("courses").listen(".course.create", (e) => {
                                 v-else-if="notifications.length > 0"
                                 v-for="notification in notifications"
                                 :key="notification.id"
-                                class="px-4 py-3 hover:bg-gray-50 border-b border-gray-100 cursor-pointer"
+                                class="px-4 py-3 hover:bg-gray-50 border-b border-gray-100 cursor-pointer transition-all duration-300 ease-in-out"
                             >
                                 <div class="flex items-start gap-3">
                                     <div
@@ -175,7 +196,6 @@ Echo.channel("courses").listen(".course.create", (e) => {
                                         <span class="text-xs text-gray-500">
                                             {{ notification.time }}
                                         </span>
-                                        
                                     </div>
                                 </div>
                             </div>
@@ -213,6 +233,25 @@ Echo.channel("courses").listen(".course.create", (e) => {
                             alt="Profile Picture"
                             class="w-10 h-10 rounded-full border-2 border-primary hover:border-primary_light transition-colors duration-200"
                         />
+                        <button
+                        @click="isMenuOpen = !isMenuOpen"
+                        class="md:hidden p-2 rounded-md hover:bg-gray-100 transition-colors duration-200"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-6 w-6 text-primary"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"
+                            />
+                        </svg>
+                    </button>
                     </div>
 
                     <!-- Dropdown Menu -->
@@ -232,6 +271,36 @@ Echo.channel("courses").listen(".course.create", (e) => {
                         >
                             Logout
                         </Link>
+                    </div>
+        
+                </div>
+
+                <!--Mobile Menu-->
+                <div
+                    v-if="isMenuOpen"
+                    class="md:hidden absolute top-20 left-0 w-full bg-white z-50 shadow-lg border-t border-gray-100"
+                >
+                    <div class="flex flex-col p-4">
+                        <Link
+                            href="/"
+                            class="py-3 px-4 hover:bg-gray-50 text-gray-800 hover:text-primary_light transition-colors duration-200"
+                            >Home</Link
+                        >
+                        <Link
+                            href="/about-us"
+                            class="py-3 px-4 hover:bg-gray-50 text-gray-800 hover:text-primary_light transition-colors duration-200"
+                            >About Us</Link
+                        >
+                        <Link
+                            href="/courses"
+                            class="py-3 px-4 hover:bg-gray-50 text-gray-800 hover:text-primary_light transition-colors duration-200"
+                            >Courses</Link
+                        >
+                        <Link
+                            href="/contact-us"
+                            class="py-3 px-4 hover:bg-gray-50 text-gray-800 hover:text-primary_light transition-colors duration-200"
+                            >Contact Us</Link
+                        >
                     </div>
                 </div>
             </div>

@@ -11,6 +11,7 @@ use App\Http\Controllers\{
     CourseController,
     HomePageController,
     LessonController,
+    MessageController,
     ProfileController,
     StudentController,
     StudentDasbhoardController,
@@ -30,6 +31,7 @@ Route::group([], function () {
 
     Route::get('/about-us', fn() => Inertia::render('AboutUs'));
     Route::get('/contact-us', fn() => Inertia::render('ContactUs'));
+    Route::post('/contact-us', [MessageController::class, 'store'])->name('contact-us'); // store message
     Route::get('/courses/getCourses', [CourseController::class, 'getCourses'])->name('courses.getCourses');
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
@@ -37,6 +39,7 @@ Route::group([], function () {
     Route::get('/total-students', [HomePageController::class, 'getTotalStudents']);
     Route::get('/total-courses', [HomePageController::class, 'getTotalCourses']);
     Route::get('/total-categories', [HomePageController::class, 'getTotalCategories']);
+
 });
 
 // Authenticated routes
@@ -57,6 +60,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/admin/publish-course/{course}', [CourseController::class, 'publish'])->name('admin.publish-course');
         Route::get('/admin/manage-students', [StudentController::class, 'index'])->name('admin.manage-students');
         Route::delete('/admin/delete-student/{student}', [StudentController::class, 'destroy'])->name('admin.delete-student');
+        Route::get('/admin/messages', [MessageController::class, 'index'])->name('admin.messages');
+        Route::get('/admin/messages/{message}', [MessageController::class, 'show'])->name('admin.messages.show');
+        Route::put('/admin/messages/{message}', [MessageController::class, 'reply'])->name('admin.messages.reply');
+        Route::delete('/admin/messages/{message}', [MessageController::class, 'destroy'])->name('admin.messages.destroy');
+
         //lessons routes
         Route::get('/admin/add-lesson/{course}', [LessonController::class, 'create'])->name('admin.add-lesson');
         Route::post('/admin/add-lesson/{course}', [LessonController::class, 'store'])->name('admin.add-lesson');
@@ -77,10 +85,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // User routes
     Route::middleware(UserMiddleware::class)->group(function () {
         Route::get('/user', [StudentDasbhoardController::class, 'index'])->name('user.dashboard');
-        Route::get('/courses/{course}', [StudentController::class, 'learningPage'])->name('courses.learningPage');
-        Route::post('/courses/{course}/enroll', [StudentEnrollController::class, 'enroll'])->name('courses.enroll');
-        Route::get('/enrolled-courses', [StudentEnrollController::class, 'getEnrolledCourses'])->name('enrolled-courses');
-        Route::get('/enrolled-courses/{course}', [StudentEnrollController::class, 'checkEnrollment'])->name('enrolled-courses.check');
+        Route::post('/courses/complete/{course}', [StudentController::class, 'courseComplete'])->name('courses.complete'); // to mark as complete
+        Route::get('/courses/learn/{course}', [StudentController::class, 'learningPage'])->name('courses.learningPage'); // to go to learning page
+        Route::post('/courses/{course}/enroll', [StudentEnrollController::class, 'enroll'])->name('courses.enroll'); // to enroll in a course
+        Route::get('/enrolled-courses', [StudentEnrollController::class, 'getEnrolledCourses'])->name('enrolled-courses'); // to get enrolled courses
+        Route::get('/enrolled-courses/{course}', [StudentEnrollController::class, 'checkEnrollment'])->name('enrolled-courses.check'); // to check if the course is enrolled
 
         //student dashboard routes
         Route::get('/student-dashboard', [StudentDasbhoardController::class, 'index'])->name('student.dashboard');
@@ -88,6 +97,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/student-dashboard/completed-courses', [StudentDasbhoardController::class, 'completedCourses'])->name('student.dashboard.completed-courses');
         Route::get('/student-dashboard/enrolled-courses', [StudentDasbhoardController::class, 'enrolledCourses'])->name('student.dashboard.enrolled-courses');
         Route::get('/student-dashboard/recommended-courses', [StudentDasbhoardController::class, 'recommendedCourses'])->name('student.dashboard.recommended-courses');
+      
     });
 
     // Shared authenticated routes

@@ -78,7 +78,7 @@ onMounted(async () => {
                                     ></div>
                                 </div>
                                 <Link
-                                    :href="`/courses/${latestCourse.id}`"
+                                    :href="`/courses/learn/${latestCourse.id}`"
                                     class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors"
                                 >
                                     Go to Course
@@ -136,7 +136,7 @@ onMounted(async () => {
                             class="bg-white rounded-xl shadow-lg p-6"
                         >
                             <img
-                                :src="`${course.profile_image}`"
+                                :src="`${course.profile_image?course.profile_image:'/assets/images/defaultCourse.jpg'}`"
                                 alt="Course"
                                 class="w-full h-48 object-cover rounded-lg mb-4"
                             />
@@ -155,6 +155,9 @@ onMounted(async () => {
                                 View Certificate
                             </button>
                         </div>
+                        <div v-else>
+                            <p class="text-gray-600">No completed courses yet.</p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -168,11 +171,12 @@ onMounted(async () => {
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div
+                            v-if="props.enrolledCourses.data.length > 0"
                             v-for="course in props.enrolledCourses.data"
                             class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
                         >
                             <img
-                                :src="`${course.profile_image}`"
+                                :src="`${course.profile_image?course.profile_image:'/assets/images/defaultCourse.jpg'}`"
                                 alt="Course"
                                 class="w-full h-48 object-cover rounded-lg mb-4"
                             />
@@ -181,17 +185,18 @@ onMounted(async () => {
                             </h3>
                             <p class="text-gray-600 text-sm mb-4">
                                 {{
-                                    course.description
-                                        .substring(0, 100)
-                                        .concat("...")
+                                    course.short_description
                                 }}
                             </p>
                             <Link
-                                :href="`/courses/${course.id}`"
+                                :href="`/courses/learn/${course.id}`"
                                 class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors w-full"
                             >
                                 Go to Course
                             </Link>
+                        </div>
+                        <div v-else>
+                            <p class="text-gray-600">No enrolled courses yet.</p>
                         </div>
                         <!--Pagination-->
                         <div class="col-span-full flex justify-center mt-6">

@@ -51,6 +51,7 @@ class CourseEnrolled implements ShouldBroadcastNow
         return [
             'message' => $this->user->name . ' has enrolled in the course [' . $this->course->title . ']',
             'time' => now()->format('H:i:s'),
+            'course' => $this->course,
         ];
     }
 }

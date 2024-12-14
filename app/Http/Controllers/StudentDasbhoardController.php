@@ -33,7 +33,11 @@ class StudentDasbhoardController extends Controller
 
     public function completedCourses()
     {
-        $completedCourse = Course::where('user_id', Auth::user()->id)->get();
+        $completedCourse = StudentEnrolled::where('student_enrolled.user_id', Auth::user()->id)
+            ->join('courses', 'student_enrolled.course_id', '=', 'courses.id')
+            ->where('student_enrolled.is_completed', 1)
+            ->select('courses.*')
+            ->get();
         return response()->json($completedCourse);
     }
 

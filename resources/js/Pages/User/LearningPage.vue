@@ -4,27 +4,28 @@ import { Head, Link } from "@inertiajs/vue3";
 import { ref, onMounted } from "vue";
 import axios from "axios";
 
-const currentLesson = ref({
-    title: "Introduction to the Course",
-    duration: "10:30",
-    completed: false,
-    videoUrl: "https://example.com/video.mp4"
+const course = ref({});
+const isCompleted = ref(0);
+const props = defineProps({
+    course: Object
 });
+console.log(props.course.is_completed, "course info");
 
 const courseProgress = ref(60);
-const currentModule = ref({
-    title: "Module 1: Getting Started",
-    lessons: [
-        { title: "Welcome to the Course", duration: "5:20", completed: true },
-        { title: "Course Overview", duration: "8:45", completed: true },
-        { title: "Setting Up Your Environment", duration: "15:30", completed: false },
-        { title: "Basic Concepts", duration: "12:15", completed: false }
-    ]
-});
 
-const toggleLessonComplete = () => {
-    currentLesson.value.completed = !currentLesson.value.completed;
+const toggleCourseComplete = () => {
+    axios.post(`/courses/complete/${props.course.course.id}`, {
+        completed: isCompleted.value
+    })
+    .then(response => {
+        isCompleted.value = response.data.completed;
+    })
+    .catch(error => {
+        console.error('Error toggling course completion:', error);
+        // Handle the error appropriately
+    });
 };
+
 </script>
 
 <template>
@@ -37,7 +38,7 @@ const toggleLessonComplete = () => {
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h1 class="text-3xl font-bold text-gray-900">Course Title</h1>
+                            <h1 class="text-3xl font-bold text-gray-900">{{ props.course.course.title }}</h1>
                             <div class="mt-2 flex items-center gap-4">
                                 <div class="flex items-center text-sm text-gray-600">
                                     <i class="pi pi-clock mr-2"></i>
@@ -68,24 +69,24 @@ const toggleLessonComplete = () => {
                                 </div>
                             </div>
                             <div class="p-6">
-                                <h2 class="text-xl font-semibold text-gray-900">{{ currentLesson.title }}</h2>
+                                <h2 class="text-xl font-semibold text-gray-900">{{ props.course.course.title }}</h2>
                                 <div class="mt-4 flex items-center justify-between">
                                     <div class="flex items-center gap-4">
                                         <span class="text-sm text-gray-600">
                                             <i class="pi pi-clock mr-2"></i>
-                                            {{ currentLesson.duration }}
+                                            {{ props.course.course.duration }}
                                         </span>
                                     </div>
                                     <button 
-                                        @click="toggleLessonComplete"
+                                        @click="toggleCourseComplete"
                                         :class="[
                                             'px-4 py-2 rounded-lg text-sm font-medium',
-                                            currentLesson.completed 
+                                            props.course.is_completed == 1
                                                 ? 'bg-green-100 text-green-700' 
                                                 : 'bg-primary/10 text-primary hover:bg-primary/20'
                                         ]"
                                     >
-                                        {{ currentLesson.completed ? 'Completed' : 'Mark as Complete' }}
+                                        {{ props.course.is_completed == 1 ? 'Completed' : 'Mark as Complete' }}
                                     </button>
                                 </div>
                             </div>
@@ -94,10 +95,10 @@ const toggleLessonComplete = () => {
 
                     <!-- Course Content Sidebar -->
                     <div class="bg-white rounded-xl shadow-lg p-6 h-fit">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ currentModule.title }}</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ props.course.course.title }}</h3>
                         <div class="space-y-3">
-                            <div 
-                                v-for="(lesson, index) in currentModule.lessons" 
+                            <div v-if="props.course.course.lessons.length > 0"
+                                v-for="(lesson, index) in props.course.course.lessons" 
                                 :key="index"
                                 class="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                                 :class="{'bg-gray-50': index === 0}"
@@ -110,7 +111,7 @@ const toggleLessonComplete = () => {
                                     </div>
                                     <span class="text-sm font-medium text-gray-700">{{ lesson.title }}</span>
                                 </div>
-                                <span class="text-sm text-gray-500">{{ lesson.duration }}</span>
+                                <span class="text-sm text-gray-500">50:00 minutes</span>
                             </div>
                         </div>
                     </div>

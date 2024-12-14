@@ -11,7 +11,7 @@ import { Link } from '@inertiajs/vue3';
           Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
         </p>
         <Link
-          href="/contact"
+          href="/contact-us"
           class="inline-flex items-center px-8 py-4 bg-primary hover:bg-primary_light transition-colors duration-300 rounded-full text-white font-semibold text-lg group"
         >
           Contact Us

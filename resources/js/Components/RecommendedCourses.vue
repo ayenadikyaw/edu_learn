@@ -1,63 +1,23 @@
-<template>
-    <ThemeSwitcher />
-    <div class="card">
-        <Carousel :value="sampleCourses" :numVisible="3" :numScroll="1" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
-            <template #item="slotProps">
-                <div class="border border-surface-200 dark:border-surface-700 rounded m-2  p-4">
-                    <div class="mb-4">
-                        <div class="relative mx-auto">
-                            <img src="/assets/images/mission.jpg" :alt="slotProps.data.name" class="w-full rounded" />
-                            <Tag :value="slotProps.data.status" :severity="getSeverity(slotProps.data.status)" class="absolute" style="left:5px; top: 5px"/>
-                        </div>
-                    </div>
-                    <div class="mb-4 font-medium">{{ slotProps.data.name }}</div>
-                    <div class="flex justify-between items-center">
-                        <div class="mt-0 font-semibold text-xl">${{ slotProps.data.price }}</div>
-                        <span>
-                           <button class="text-primary font-semibold">View Course
-                            <i class="pi pi-eye ml-2"></i>
-                           </button>
-                        </span>
-                    </div>
-                </div>
-            </template>
-        </Carousel>
-    </div>
-</template>
-
 <script setup>
 import { ref, onMounted } from "vue";
+import axios from 'axios';
+import { Link } from '@inertiajs/vue3';
 
-//import { Carousel } from 'primevue/carousel';
 
+//fetch courses from api
+const courses = ref([]);
 
-
-const sampleCourses = ref([
-    {
-        image: 'course-1.jpg',
-        name: 'Introduction to Python',
-        status: 'Popular',
-        price: 19.99
-    },
-    {
-        image: 'course-2.jpg',
-        name: 'Web Development Fundamentals',
-        status: 'New',
-        price: 29.99
-    },
-    {
-        image: 'course-3.jpg',
-        name: 'Data Science Essentials',
-        status: 'Trending',
-        price: 39.99
-    },
-    {
-        image: 'course-4.jpg',
-        name: 'Machine Learning Basics',
-        status: 'New',
-        price: 49.99
+onMounted(async () => {
+    try {
+        const response = await axios.get('courses/getCourses');
+        courses.value = response.data;
+        console.log('Response:', response);
+        console.log('Courses:', courses.value);
+    } catch (error) {
+        console.error('Error fetching courses:', error);
     }
-]);
+});
+
 const responsiveOptions = ref([
     {
         breakpoint: '1400px',
@@ -98,3 +58,31 @@ const getSeverity = (status) => {
 };
 
 </script>
+<template>
+    <!-- <ThemeSwitcher /> -->
+    <div class="card">
+        <Carousel :value="courses" :numVisible="3" :numScroll="1" :responsiveOptions="responsiveOptions" circular :autoplayInterval="3000">
+            <template #item="slotProps">
+                <div class="border border-surface-200 dark:border-surface-700 rounded m-2  p-4">
+                    <div class="mb-4">
+                        <div class="relative mx-auto">
+                            <img src="/assets/images/defaultCourse1.jpg" :alt="slotProps.data.name" class="w-full rounded" />
+                            <Tag :value="slotProps.data.status" :severity="getSeverity(slotProps.data.status)" class="absolute" style="left:5px; top: 5px"/>
+                        </div>
+                    </div>
+                    <div class="mb-4 font-medium">{{ slotProps.data.title }}</div>
+                    <div class="flex justify-between items-center">
+                        <div class="mt-0 font-semibold text-xl">${{ slotProps.data.price }}</div>
+                        <span>
+                           <Link :href="`/courses/${slotProps.data.id}`" class="text-sm md:text-base text-primary font-semibold">View Course
+                            <i class="pi pi-eye ml-2"></i>
+                           </Link>
+                        </span>
+                    </div>
+                </div>
+            </template>
+        </Carousel>
+    </div>
+</template>
+
+

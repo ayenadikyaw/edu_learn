@@ -123,7 +123,7 @@ const deleteCourse = (courseId) => {
                     paginator
                 >
                     <!--Image-->
-                    <Column field="image" header="Course" class="w-[15%] h-12">
+                    <Column field="image" header="Course" class="w-[15%] h-12" :sortable="true">
                         <template #body="slotProps">
                             <div class="flex items-center gap-4 p-2">
                                 <img

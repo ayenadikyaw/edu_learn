@@ -13,6 +13,7 @@ const showNotifications = ref(false);
 const notifications = ref([]);
 const error = ref(null);
 const user = ref({});
+const isLoading = ref(false);
 
 onMounted(() => {
     user.value = usePage().props.auth.user;
@@ -21,11 +22,10 @@ onMounted(() => {
 /**** Functions ****/
 //fetch notifications
 const fetchNotifications = async () => {
+    isLoading.value = true;
     try {
         const response = await axios.get(`/api/notifications/${user.value.id}`);
         const newNotifications = response.data.notifications;
-        //console.log(newNotifications, "newNotifications");
-        //transform into proper message
         const transformedNotifications = newNotifications.map(
             (notification) => {
                 return {
@@ -34,17 +34,14 @@ const fetchNotifications = async () => {
                 };
             }
         );
-        notifications.value = [
-            ...notifications.value,
-            ...transformedNotifications,
-        ];
+        notifications.value = [...notifications.value, ...transformedNotifications];
         error.value = null;
-   
     } catch (err) {
-        error.value =
-            err.response?.data?.message || "Failed to fetch notifications";
+        error.value = err.response?.data?.message || "Failed to fetch notifications";
         console.error("Notification fetch error:", err.response?.data || err);
         notifications.value = [];
+    } finally {
+        isLoading.value = false;
     }
 };
 
@@ -88,9 +85,19 @@ const toggleNotifications = () => {
 };
 
 // Update the Echo usage to use window.Echo
-Echo.channel("course-enrolled").listen(".course.enrolled", (e) => {
-    //console.log(e.message, "e");
-    notifications.value.unshift(e.message);
+Echo.channel("course-enrolled").listen(".course.enrolled", async (e) => {
+    isLoading.value = true;
+    try {
+        const newNotification = {
+            message: typeof e.message === 'string' ? e.message : e.message?.message || 'New notification',
+            time: moment().fromNow()
+        };
+        notifications.value = [{...newNotification}, ...notifications.value];
+    } finally {
+        setTimeout(() => {
+            isLoading.value = false;
+        }, 300);
+    }
 });
 </script>
 
@@ -158,14 +165,17 @@ Echo.channel("course-enrolled").listen(".course.enrolled", (e) => {
                     </Link>
                 </div>
                 <div class="px-4 py-3 hover:bg-primary/10 cursor-pointer">
-                    <div class="flex items-center space-x-3 text-white">
-                        <i class="pi pi-cog"></i>
+                    <Link
+                        href="/admin/messages"
+                        class="flex items-center space-x-3 text-white"
+                    >
+                        <i class="pi pi-envelope"></i>
                         <span
                             class="whitespace-nowrap transition-opacity duration-300"
                             :class="{ 'opacity-0': isSidebarCollapsed }"
-                            >Settings</span
+                            >Messages</span
                         >
-                    </div>
+                    </Link>
                 </div>
             </nav>
         </div>
@@ -286,12 +296,6 @@ Echo.channel("course-enrolled").listen(".course.enrolled", (e) => {
                                     class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
                                 >
                                     <div class="py-1">
-                                        <a
-                                            href="#"
-                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                        >
-                                            Profile
-                                        </a>
                                         <Link
                                             @click.prevent="handleLogout"
                                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

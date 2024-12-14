@@ -7,6 +7,7 @@ use App\Models\StudentEnrolled;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
 {
@@ -26,8 +27,23 @@ class StudentController extends Controller
 
     public function learningPage(Course $course)
     {
+        $enrolledCourse = StudentEnrolled::where('course_id', $course->id)
+            ->where('user_id', Auth::user()->id)
+            ->with('course.lessons')
+            ->first();
+
         return Inertia::render('User/LearningPage', [
-            'course' => $course
+            'course' => $enrolledCourse,
         ]);
+    }
+
+    public function courseComplete(Course $course)
+    {
+        $enrolledCourse = StudentEnrolled::where('course_id', $course->id)
+            ->where('user_id', Auth::user()->id)
+            ->first();
+        $enrolledCourse->is_completed = 1;
+        $enrolledCourse->save();
+        return response()->json(['completed' => $enrolledCourse->is_completed]);
     }
 }

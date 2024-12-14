@@ -113,7 +113,7 @@ const deleteStudent = (studentId) => {
                                         :src="
                                             slotProps.data.profile_image
                                                 ? slotProps.data.profile_image
-                                                : '/assets/images/user.png'
+                                                : '/assets/images/student.png'
                                         "
                                         alt="student profile"
                                         class="w-12 h-12 object-cover rounded-full shadow-sm"
