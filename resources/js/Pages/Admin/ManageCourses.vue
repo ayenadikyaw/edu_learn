@@ -127,7 +127,7 @@ const deleteCourse = (courseId) => {
                         <template #body="slotProps">
                             <div class="flex items-center gap-4 p-2">
                                 <img
-                                    :src="slotProps.data.profile_image"
+                                    :src="slotProps.data.profile_image ? slotProps.data.profile_image : '/assets/images/defaultCourse1.jpg'"
                                     alt="product image"
                                     class="w-16 h-16 object-cover rounded-lg shadow-sm"
                                 />

@@ -5,21 +5,21 @@ const testimonials = [
     name: "Sarah Johnson",
     role: "Web Development Student",
     message: "This course transformed my career path. The hands-on projects and supportive community made learning enjoyable and effective.",
-    avatar: "/images/avatars/avatar-1.jpg"
+    avatar: "/assets/images/student1.jpg"
   },
   {
     id: 2, 
     name: "Michael Chen",
     role: "Data Science Student",
     message: "The instructors are incredibly knowledgeable and always available to help. I've gained practical skills that I use daily in my new job.",
-    avatar: "/images/avatars/avatar-2.jpg"
+    avatar: "/assets/images/student2.jpg"
   },
   {
     id: 3,
     name: "Emma Williams",
     role: "UI/UX Design Student", 
     message: "The curriculum is well-structured and up-to-date with industry standards. I feel confident in my abilities after completing this program.",
-    avatar: "/images/avatars/avatar-3.jpg"
+    avatar: "/assets/images/student3.jpg"
   }
 ];
 </script>

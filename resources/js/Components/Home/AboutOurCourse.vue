@@ -1,4 +1,7 @@
 <script setup>
+import axios from 'axios';
+import { ref, onMounted } from 'vue';
+import { Link } from '@inertiajs/vue3';
 const features = [
     {
         icon: 'pi pi-users',
@@ -16,6 +19,19 @@ const features = [
         description: 'Apply your knowledge through hands-on projects and real-world scenarios'
     }
 ];
+
+const totalStudents = ref(0);
+const totalCourses = ref(0);
+
+
+onMounted(() => {
+    axios.get('/total-students').then(response => {
+        totalStudents.value = response.data;
+    });
+    axios.get('/total-courses').then(response => {
+        totalCourses.value = response.data;
+    });
+});
 </script>
 
 <template>
@@ -39,11 +55,11 @@ const features = [
                         <div class="absolute -bottom-10 -right-10 bg-white p-6 rounded-xl shadow-xl">
                             <div class="flex gap-8">
                                 <div class="text-center">
-                                    <div class="text-3xl font-bold text-primary">50+</div>
+                                    <div class="text-3xl font-bold text-primary">{{ totalCourses }}+</div>
                                     <div class="text-gray-600">Courses</div>
                                 </div>
                                 <div class="text-center">
-                                    <div class="text-3xl font-bold text-primary">1000+</div>
+                                    <div class="text-3xl font-bold text-primary">{{ totalStudents }}</div>
                                     <div class="text-gray-600">Students</div>
                                 </div>
                             </div>
@@ -82,10 +98,11 @@ const features = [
                             </div>
                         </div>
 
-                        <!-- CTA Button -->
-                        <button class="mt-8 bg-primary hover:bg-primary_light text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                            Explore Our Courses
-                        </button>
+                        <div class="flex justify-center">
+                            <Link :href="route('courses.index')" class="mt-4 bg-primary hover:bg-primary_light text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                                Explore Our Courses
+                        </Link>
+                        </div>
                     </div>
                 </div>
             </div>

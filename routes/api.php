@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseLevelController;
+use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -12,4 +13,6 @@ Route::get('/course_levels',[CourseLevelController::class,'index']);
 
 Route::get('/notifications/{user}',[NotificationController::class,'getNotifications']);
 Route::post('/notifications/{notification}/mark-as-read',[NotificationController::class,'markAsRead']);
+
+
 

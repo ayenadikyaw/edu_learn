@@ -4,7 +4,7 @@ import { Head } from '@inertiajs/vue3';
 import DefaultLayout from "@/Components/Layouts/default.vue";
 import AuthenticatedLayout from "@/Components/Layouts/authenticated.vue";
 import { usePage } from '@inertiajs/vue3';
-
+import { Link } from '@inertiajs/vue3';
 
 const text = 'Empowering learners worldwide with accessible, high-quality education through our innovative online learning platform.';
 const displayText = ref('');
@@ -64,7 +64,7 @@ onMounted(() => {
                             </div>
                             <div class="relative">
                                 <img
-                                    src="../../../public/storage/assets/images/mission.jpg"
+                                    src="/assets/images/mission.jpg"
                                     alt="Our Mission"
                                     class="rounded-xl shadow-lg w-full h-[300px] object-cover"
                                 />
@@ -166,7 +166,7 @@ onMounted(() => {
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div class="bg-gray-50 rounded-xl p-6 text-center hover:scale-105 transition-all duration-300">
                         <img
-                            src="/images/team-1.jpg"
+                            src="/assets/images/Staff3.jpg"
                             alt="Team Member"
                             class="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
                         />
@@ -176,16 +176,16 @@ onMounted(() => {
                         <p class="text-primary mb-2">CEO & Founder</p>
                         <p class="text-gray-600 text-sm">
                             Education enthusiast with 15+ years of experience in
-                            EdTech
+                            EduLearn
                         </p>
                     </div>
                     <div class="bg-gray-50 rounded-xl p-6 text-center hover:scale-105 transition-all duration-300">
                         <img
-                            src="/images/team-2.jpg"
+                            src="/assets/images/Staff1.jpg"
                             alt="Team Member"
                             class="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
                         />
-                        <h3 class="text-xl font-semibold mb-2">Michael Chen</h3>
+                        <h3 class="text-xl font-semibold mb-2">David Smith</h3>
                         <p class="text-primary mb-2">Head of Education</p>
                         <p class="text-gray-600 text-sm">
                             Former professor with passion for online learning
@@ -193,7 +193,7 @@ onMounted(() => {
                     </div>
                     <div class="bg-gray-50 rounded-xl p-6 text-center hover:scale-105 transition-all duration-300">
                         <img
-                            src="/images/team-3.jpg"
+                            src="/assets/images/Staff2.jpg"
                             alt="Team Member"
                             class="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
                         />
@@ -219,11 +219,11 @@ onMounted(() => {
                     Join thousands of learners who are already advancing their
                     careers with LearnHub
                 </p>
-                <button
+                <Link :href="route('courses.index')"
                     class="bg-primary hover:bg-primary_light text-white px-8 py-3 rounded-lg text-lg font-semibold transition-colors duration-200 shadow-lg hover:shadow-xl"
                 >
                     Browse Courses
-                </button>
+                </Link>
             </div>
         </section>
     </main>

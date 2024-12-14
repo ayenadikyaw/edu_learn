@@ -6,7 +6,7 @@
                 <div class="border border-surface-200 dark:border-surface-700 rounded m-2  p-4">
                     <div class="mb-4">
                         <div class="relative mx-auto">
-                            <img src="../../../public/storage/assets/images/mission.jpg" :alt="slotProps.data.name" class="w-full rounded" />
+                            <img src="/assets/images/mission.jpg" :alt="slotProps.data.name" class="w-full rounded" />
                             <Tag :value="slotProps.data.status" :severity="getSeverity(slotProps.data.status)" class="absolute" style="left:5px; top: 5px"/>
                         </div>
                     </div>

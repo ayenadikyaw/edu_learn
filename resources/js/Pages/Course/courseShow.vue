@@ -118,11 +118,11 @@ const handleEnroll = () => {
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
                 <div class="relative">
                     <img
-                        :src="course_data.image"
+                        :src="course_data.image ? course_data.image : '/assets/images/defaultCourse1.jpg'"
                         :alt="course_data.title"
                         class="w-full h-[400px] object-cover rounded-2xl shadow-lg"
                     />
-                    <div
+                    <div v-if="course_data.badge"
                         class="absolute top-4 right-4 bg-gradient-to-r text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg"
                         :class="course_data.badgeColor"
                     >

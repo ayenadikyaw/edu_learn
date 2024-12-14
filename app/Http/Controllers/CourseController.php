@@ -135,6 +135,7 @@ class CourseController extends Controller
                 'status' => 0,
                 'short_description' => $validated['short_description'],
                 'learning_points' => $validated['learning_points'] ?? null,
+                'badge' => 'new',
             ]);
 
             $course = Course::find($course->id)->load('lessons');
@@ -228,4 +229,11 @@ class CourseController extends Controller
         }
         return redirect()->route('admin.manage-courses')->with('success', 'Course published successfully!');
     }
+
+    public function getCourses()
+    {
+        $courses = Course::with('lessons')->latest()->take(3)->get();
+        return response()->json($courses);
+    }
+
 }

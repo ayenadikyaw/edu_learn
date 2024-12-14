@@ -11,7 +11,7 @@ const enrolledCourses = ref([]);
 const props = defineProps({
     enrolledCourses: Object,
 });
-console.log(props.enrolledCourses, "enrolled courses");
+
 
 const navigate = (url) => {
     if (!url) return;
@@ -27,6 +27,7 @@ onMounted(async () => {
     await axios.get("/student-dashboard/latest-course").then((response) => {
         latestCourse.value = response.data;
         latestCourse.value = latestCourse.value[0];
+        console.log(latestCourse.value, "latest course");
     });
     await axios.get("/student-dashboard/completed-courses").then((response) => {
         completedCourses.value = response.data;
@@ -53,7 +54,7 @@ onMounted(async () => {
                             class="flex flex-col md:flex-row items-center gap-6"
                         >
                             <img
-                                :src="`${latestCourse.profile_image}`"
+                                :src="`${latestCourse.profile_image?latestCourse.profile_image:'/assets/images/defaultCourse.jpg'}`"
                                 alt="Course thumbnail"
                                 class="w-full md:w-64 h-40 object-cover rounded-lg"
                             />
@@ -76,11 +77,12 @@ onMounted(async () => {
                                         style="width: 60%"
                                     ></div>
                                 </div>
-                                <button
+                                <Link
+                                    :href="`/courses/${latestCourse.id}`"
                                     class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors"
                                 >
                                     Go to Course
-                                </button>
+                                </Link>
                             </div>
                         </div>
                     </div>

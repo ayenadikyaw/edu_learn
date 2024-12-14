@@ -9,7 +9,7 @@ import { router } from "@inertiajs/vue3";
 import { useConfirm } from "primevue/useconfirm";
 import ConfirmDialog from "primevue/confirmdialog";
 import AdminLayout from "@/Components/Layouts/adminLayout.vue";
-
+import { Link } from "@inertiajs/vue3";
 // Props
 const props = defineProps({
     course: Object,
@@ -270,6 +270,10 @@ const removeLearningPoint = (index) => {
 
 <template>
     <AdminLayout>
+    <Link :href="route('admin.add-course')" class="flex items-center gap-2 text-primary hover:text-primary/90">
+            <span class="pi pi-arrow-left text-2xl"></span>
+            Back</Link
+        >
      <ConfirmDialog group="headless">
         <template #container="{ message, acceptCallback, rejectCallback }">
             <div
@@ -523,7 +527,7 @@ const removeLearningPoint = (index) => {
                             :key="editorKey"
                             theme="snow"
                             contentType="html"
-                            class="!h-96 text-sm mb-12 overflow-scroll"
+                            class="!h-120 text-sm mb-12 overflow-scroll"
                         />
                     </div>
                     <button 
